@@ -17,7 +17,7 @@ int main()
         openlog("Logs", LOG_PID, LOG_USER);
 
         syslog(LOG_INFO, "Comienza el registro de logs");
-        syslog(LOG_DEBUG, "Debug messageeeeeeeeee");
+        syslog(LOG_DEBUG, "Debug message");
 
         char pid_string[100];
         int numero = getpid();

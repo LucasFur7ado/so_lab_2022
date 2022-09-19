@@ -20,9 +20,8 @@ int main(int argc, char *argv[])
     pid = fork();
     if (pid == 0)
     {
-        if (access("/home/tolteca/Escritorio/", F_OK) != -1)
+        if (access(argv[2], F_OK) != -1)
         {
-            printf("IF");
             execl("/bin/cp", "cp", argv[1], argv[2], NULL);
             exit(0);
         }
@@ -43,7 +42,6 @@ int main(int argc, char *argv[])
     if (pid_2 == 0)
     {
         char url[200] = "document=@";
-        strcat(url, argv[2]);
         strcat(url, argv[1]);
 
         execl("/bin/curl", "curl", "-X", "POST", "https://api.telegram.org/bot5737142449:AAFfblY1GmUIW_ZT3-F9YXhOJNVm1acYD0A/sendDocument", "-F", "chat_id=-732764355", "-F", url, NULL);
