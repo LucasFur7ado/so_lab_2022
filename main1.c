@@ -1,29 +1,41 @@
 #include <unistd.h>
-#include <stdio.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
+#include <stdio.h>
 
-// IMPRIME PADRE, HIJO Y EJECUTA ls
+// RECIBE UN COMANDO DE LA CLI COMO ARGUMENTO
+// Y LO EJECUTA
 
-int main()
+int main(int argc, char *argv[])
 {
+  if (argc < 2)
+  {
+    fprintf(stderr, "%s", "Faltan argumentos \n");
+    exit(EXIT_FAILURE);
+  }
+
   pid_t pid;
   pid = fork();
-  if (pid > 0)
+
+  if (pid == 0)
   {
-    printf("Soy el padre (%d, hijo de %d)\n", getpid(), getppid());
-  }
-  else if (pid == 0)
-  {
-    printf("Soy el hijo (%d, de %d)\n", getpid(), getppid());
-    execlp("/bin/ls", "ls", NULL);
+
+    char cadena[30] = "/bin/";
+    strcat(cadena, argv[1]);
+    execlp(cadena, argv[1], NULL);
+    exit(0);
   }
   else if (pid < 0)
-    printf("Hubo un error");
+  {
+    fprintf(stderr, "%s", "Hubo un error \n");
+    exit(EXIT_FAILURE);
+  }
   else
   {
     wait(NULL);
-    printf("Finaliza el proceso padre");
+    printf("Finaliza el proceso padre \n");
   }
-
-  return 0;
+  exit(EXIT_SUCCESS);
 }

@@ -1,34 +1,50 @@
-#include <unistd.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-#include <time.h>
+#include <unistd.h>
+#include <sys/types.h>
 
-// RECIBE num COMO ARGUMENTO E IMPRIME 
-// LA FECHA num VECES
+// RECIBE UN num COMO ARGUMENTO, IMPRIME
+// algo num VECES SOLO SI ES SUPER USUARIO
+// Y LUEGO APAGA EL EQUIPO
 
 int main(int argc, char *argv[])
 {
-  pid_t pid, pid1;
-  int num = strtol(argv[1], NULL, 10);
-  for (int i = 0; i < num; i++)
+  if (argc < 2)
   {
-    pid = fork();
-    if (pid == 0)
-    {
-
-      printf("========================\n");
-      printf("id: %d \n", getpid());
-      time_t tiempo = time(0);
-      struct tm *tlocal = localtime(&tiempo);
-      char output[128];
-      strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
-      printf("%s\n", output);
-      printf("=======================\n");
-
-      exit(0);
-    }
+    fprintf(stderr, "%s", "Faltan argumentos \n");
+    exit(EXIT_FAILURE);
   }
 
-  return 0;
+  pid_t pid, pid_2;
+  uid_t uid;
+  uid = geteuid();
+  int num = strtol(argv[1], NULL, 10);
+
+  if (uid != 0)
+  {
+    fprintf(stderr, "%s", "No eres super \n");
+    exit(EXIT_FAILURE);
+  }
+  pid = fork();
+  if (pid == 0)
+  {
+    for (int i = 0; i < num; i++)
+      printf("Apagando el equipo...\n");
+    exit(0);
+  }
+  else if (pid < 0)
+  {
+    fprintf(stderr, "%s", "Hubo un error \n");
+    exit(EXIT_FAILURE);
+  }
+  pid_2 = fork();
+  if (pid_2 == 0)
+    execlp("/sbin/shutdown", "shutdown -h now", NULL);
+  else if (pid_2 < 0)
+  {
+    fprintf(stderr, "%s", "Hubo un error \n");
+    exit(EXIT_FAILURE);
+  }
+
+  exit(EXIT_SUCCESS);
 }
