@@ -25,6 +25,7 @@ int main()
 
         char command[200] = "journalctl _PID=";
         strcat(command, pid_string);
+	system(command);
         strcat(command, "> syslogs.txt");
 
         system(command);
