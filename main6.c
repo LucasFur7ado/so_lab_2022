@@ -29,7 +29,7 @@ int main()
         strcat(command, "> syslogs.txt");
 
         system(command);
-        execl("/bin/curl", "curl", "-X", "POST", "https://api.telegram.org/bot5737142449:AAFfblY1GmUIW_ZT3-F9YXhOJNVm1acYD0A/sendDocument", "-F", "chat_id=-732764355", "-F", "document=@syslogs.txt", NULL);
+        execl("/bin/curl", "curl", "-X", "POST", "https://api.telegram.org/bot<BOT_KEY>/sendDocument", "-F", "chat_id=<CHAT_ID>", "-F", "document=@syslogs.txt", NULL);
         printf("Logs enviados \n");
 
         closelog();
